@@ -549,7 +549,7 @@ pub struct StreamCDC {
     /// Number of relevant bytes in the `buffer`.
     length: usize,
     /// Source from which data is read into `buffer`.
-    source: Box<dyn Read>,
+    source: Box<dyn Read + Send>,
     /// Number of bytes read from the source so far.
     processed: u64,
     /// True when the source produces no more data.
@@ -569,7 +569,7 @@ impl StreamCDC {
     ///
     /// Uses chunk size normalization level 1 by default.
     ///
-    pub fn new(source: Box<dyn Read>, min_size: u32, avg_size: u32, max_size: u32) -> Self {
+    pub fn new(source: Box<dyn Read + Send>, min_size: u32, avg_size: u32, max_size: u32) -> Self {
         StreamCDC::with_level(source, min_size, avg_size, max_size, Normalization::Level1)
     }
 
@@ -577,7 +577,7 @@ impl StreamCDC {
     /// Create a new `StreamCDC` with the given normalization level.
     ///
     pub fn with_level(
-        source: Box<dyn Read>,
+        source: Box<dyn Read + Send>,
         min_size: u32,
         avg_size: u32,
         max_size: u32,
